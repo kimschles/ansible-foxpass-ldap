@@ -5,7 +5,7 @@
         bucket: "{{foxpass_ldap_s3_config_bucket}}" 
         object: "{{foxpass_ldap_s3_config_prefix}}" 
         mode: 'getstr'
-      register: info
+      register: s3_ldap_bind_config
       when: foxpass_ldap_s3_config_enabled
 
 
