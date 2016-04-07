@@ -4,7 +4,6 @@
       s3: 
         bucket: "{{foxpass_ldap_s3_config_bucket}}" 
         object: "{{foxpass_ldap_s3_config_prefix}}" 
-        region: "{{foxpass_ldap_s3_region}}"
         mode: 'getstr'
       register: info
       when: foxpass_ldap_s3_config_enabled

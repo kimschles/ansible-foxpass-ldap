@@ -6,7 +6,6 @@
 #foxpass_ldap_api_key:
 
 foxpass_ldap_s3_config_enabled: no
-# foxpass_ldap_s3_region: ''
 # foxpass_ldap_s3_config_bucket: ''
 foxpass_ldap_s3_config_prefix: 'foxpass_ldap_bind.json'
 
