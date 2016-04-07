@@ -1,0 +1,106 @@
+---
+
+    - name: get ldap bind config from s3 if enabled
+      s3: 
+        bucket: "{{foxpass_ldap_s3_config_bucket}}" 
+        object: "{{foxpass_ldap_s3_config_prefix}}" 
+        region: "{{foxpass_ldap_s3_region}}"
+        mode: 'getstr'
+      register: info
+      when: foxpass_ldap_s3_config_enabled
+
+
+    - name: extract ldap bind config 
+      set_fact:
+        "{{item}}": "{{(s3_ldap_bind_config.contents|from_json)[item]}}"
+      with_items:
+        - foxpass_ldap_base_dn
+        - foxpass_ldap_bind_user
+        - foxpass_ldap_bind_password
+        - foxpass_ldap_api_key
+      when: foxpass_ldap_s3_config_enabled
+
+    - name: get foxpass setup script
+      get_url: 
+        url: 'https://raw.githubusercontent.com/foxpass/foxpass-setup/master/linux/ubuntu/14.04/foxpass_setup.py' 
+        dest: '/tmp/foxpass_setup.py'
+
+    - name: run foxpass setup
+      shell: "python foxpass_setup.py --base-dn {{foxpass_ldap_base_dn}} --bind-user {{foxpass_ldap_bind_user}} --bind-pw {{foxpass_ldap_bind_password}} --api-key {{foxpass_ldap_api_key}}"
+      args:
+        chdir: "/tmp"
+
+    - name: get names of groups
+      set_fact:
+        foxpass_ldap_acl_group_names: "{{ foxpass_ldap_acl_groups | map(attribute='name') | list}}"
+
+    - debug: msg="{{foxpass_ldap_acl_group_names}}"
+
+    - name: set groups allowed
+      copy:
+        content: "{{ foxpass_ldap_acl_group_names | join('\n') }}"
+        dest: "{{foxpass_ldap_acl_groups_config}}"
+        mode: '0644'
+      when: foxpass_ldap_acl_groups_enabled
+
+    - name: write pam group memberships file
+      copy:
+        dest: '/etc/pam.d/memberships-group'
+        content: |
+         account required pam_listfile.so onerr=fail item=group sense=allow file={{foxpass_ldap_acl_groups_config}}
+      when: foxpass_ldap_acl_groups_enabled
+
+    - name: include group memberships in common-account
+      lineinfile:
+        dest: '/etc/pam.d/common-account'
+        regexp: '^@include\smemberships-group'
+        line: '@include memberships-group'
+        state: present
+      when: foxpass_ldap_acl_groups_enabled
+
+    - name: add sudoers.d for groups
+      copy:
+        dest: '/etc/sudoers.d/{{item.name}}'
+        content: '%{{item.name}} ALL=(ALL:ALL) {%if item.passwordless_sudo %}NOPASSWD{% else %}PASSWD{% endif %}:ALL'
+      with_items: "{{foxpass_ldap_acl_groups}}"
+      when: foxpass_ldap_acl_groups_enabled and item.sudo
+
+    - name: get names of users
+      set_fact:
+        foxpass_ldap_acl_user_names: "{{ foxpass_ldap_acl_users | map(attribute='name') | list }}"
+
+    - name: set users allowed
+      copy:
+        content: "{{ foxpass_ldap_acl_user_names }}"
+        dest: "{{foxpass_ldap_acl_users_config}}"
+        mode: '0644'
+      when: foxpass_ldap_acl_users_enabled
+
+    - name: write pam user memberships file
+      copy:
+        dest: '/etc/pam.d/memberships-user'
+        content: |
+         account required pam_listfile.so onerr=fail item=user sense=allow file={{foxpass_ldap_acl_users_config}}
+      when: foxpass_ldap_acl_users_enabled
+
+    - name: include user memberships in common-account
+      lineinfile:
+        dest: '/etc/pam.d/common-account'
+        regexp: '^@include\smemberships-user'
+        line: '@include memberships-user'
+        state: present
+      when: foxpass_ldap_acl_users_enabled
+
+    - name: add sudoers.d for users
+      copy:
+        dest: '/etc/sudoers.d/{{item.name}}'
+        content: '{{item.name}} ALL=(ALL:ALL) {%if item.passwordless_sudo %}NOPASSWD{% else %}PASSWD{% endif %}:ALL'
+      with_items: "{{foxpass_ldap_acl_users}}"
+      when: foxpass_ldap_acl_users_enabled and item.sudo
+
+    - name: set nscd caching defaults
+      template:
+        src: 'nscd.conf.j2'
+        dest: '/etc/nscd.conf'
+      notify:
+        - 'restart nscd'

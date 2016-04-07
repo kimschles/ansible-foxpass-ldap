@@ -1,0 +1,78 @@
+---
+
+#foxpass_ldap_base_dn:
+#foxpass_ldap_bind_user: 
+#foxpass_ldap_bind_password: 
+#foxpass_ldap_api_key:
+
+foxpass_ldap_s3_config_enabled: no
+# foxpass_ldap_s3_region: ''
+# foxpass_ldap_s3_config_bucket: ''
+foxpass_ldap_s3_config_prefix: 'foxpass_ldap_bind.json'
+
+
+foxpass_ldap_acl_groups_enabled: yes
+foxpass_ldap_acl_groups_config: '/etc/security/groups_allowed.conf'
+foxpass_ldap_acl_default_groups:
+  - name: adm
+    sudo: yes
+    passwordless_sudo: yes
+  - name: reactiveops
+    sudo: yes
+    passwordless_sudo: yes
+foxpass_ldap_acl_extra_groups: []
+foxpass_ldap_acl_groups: "{{ foxpass_ldap_acl_default_groups | union(foxpass_ldap_acl_extra_groups) }}"
+
+foxpass_ldap_acl_users_enabled: no
+foxpass_ldap_acl_users_config: '/etc/security/users_allowed.conf'
+foxpass_ldap_acl_default_users:
+  - name: reactiveops
+    sudo: yes
+    passwordless_sudo: yes
+foxpass_ldap_acl_extra_users: []
+foxpass_ldap_acl_users: "{{ foxpass_ldap_acl_default_users | union(foxpass_ldap_acl_extra_users) }}"
+
+
+foxpass_ldap_nscd_logfile: '/var/log/nscd.log'
+foxpass_ldap_nscd_debug_level: '0'
+foxpass_ldap_nscd_paranoia: 'no'
+
+foxpass_ldap_nscd_passwd_enable_cache: 'no'
+foxpass_ldap_nscd_passwd_positive_time_to_live: '600'
+foxpass_ldap_nscd_passwd_negative_time_to_live: '20'
+foxpass_ldap_nscd_passwd_suggested_size: '211'
+foxpass_ldap_nscd_passwd_check_files: 'yes'
+foxpass_ldap_nscd_passwd_persistent: 'yes'
+foxpass_ldap_nscd_passwd_shared: 'yes'
+foxpass_ldap_nscd_passwd_max_db_size: '33554432'
+foxpass_ldap_nscd_passwd_auto_propagate: 'yes'
+
+foxpass_ldap_nscd_group_enable_cache: 'no'
+foxpass_ldap_nscd_group_positive_time_to_live: '3600'
+foxpass_ldap_nscd_group_negative_time_to_live: '60'
+foxpass_ldap_nscd_group_suggested_size: '211'
+foxpass_ldap_nscd_group_check_files: 'yes'
+foxpass_ldap_nscd_group_persistent: 'yes'
+foxpass_ldap_nscd_group_shared: 'yes'
+foxpass_ldap_nscd_group_max_db_size: '33554432'
+foxpass_ldap_nscd_group_auto_propagate: 'yes'
+
+foxpass_ldap_nscd_hosts_enable_cache: 'no'
+foxpass_ldap_nscd_hosts_positive_time_to_live: '3600'
+foxpass_ldap_nscd_hosts_negative_time_to_live: '20'
+foxpass_ldap_nscd_hosts_suggested_size: '211'
+foxpass_ldap_nscd_hosts_check_files: 'yes'
+foxpass_ldap_nscd_hosts_persistent: 'yes'
+foxpass_ldap_nscd_hosts_shared: 'yes'
+foxpass_ldap_nscd_hosts_max_db_size: '33554432'
+foxpass_ldap_nscd_hosts_auto_propagate: 'yes'
+
+foxpass_ldap_nscd_services_enable_cache: 'yes'
+foxpass_ldap_nscd_services_positive_time_to_live: '28800'
+foxpass_ldap_nscd_services_negative_time_to_live: '20'
+foxpass_ldap_nscd_services_suggested_size: '211'
+foxpass_ldap_nscd_services_check_files: 'yes'
+foxpass_ldap_nscd_services_persistent: 'yes'
+foxpass_ldap_nscd_services_shared: 'yes'
+foxpass_ldap_nscd_services_max_db_size: '33554432'
+foxpass_ldap_nscd_services_auto_propagate: 'yes'

@@ -1,0 +1,61 @@
+# {{ ansible_managed }}
+  logfile           {{foxpass_ldap_nscd_logfile}}
+# threads           4
+# max-threads       32
+# server-user       nobody
+# stat-user         somebody
+  debug-level       {{foxpass_ldap_nscd_debug_level}}
+# reload-count      5
+  paranoia          {{foxpass_ldap_nscd_paranoia}}
+# restart-interval  3600
+
+  enable-cache          passwd    {{foxpass_ldap_nscd_passwd_enable_cache}}
+  positive-time-to-live passwd    {{foxpass_ldap_nscd_passwd_positive_time_to_live}}
+  negative-time-to-live passwd    {{foxpass_ldap_nscd_passwd_negative_time_to_live}}
+  suggested-size        passwd    {{foxpass_ldap_nscd_passwd_suggested_size}}
+  check-files           passwd    {{foxpass_ldap_nscd_passwd_check_files}}
+  persistent            passwd    {{foxpass_ldap_nscd_passwd_persistent}}
+  shared                passwd    {{foxpass_ldap_nscd_passwd_shared}}
+  max-db-size           passwd    {{foxpass_ldap_nscd_passwd_max_db_size}}
+  auto-propagate        passwd    {{foxpass_ldap_nscd_passwd_auto_propagate}}
+
+  enable-cache          group   {{foxpass_ldap_nscd_group_enable_cache}}
+  positive-time-to-live group   {{foxpass_ldap_nscd_group_positive_time_to_live}}
+  negative-time-to-live group   {{foxpass_ldap_nscd_group_negative_time_to_live}}
+  suggested-size        group   {{foxpass_ldap_nscd_group_suggested_size}}
+  check-files           group   {{foxpass_ldap_nscd_group_check_files}}
+  persistent            group   {{foxpass_ldap_nscd_group_persistent}}
+  shared                group   {{foxpass_ldap_nscd_group_shared}}
+  max-db-size           group   {{foxpass_ldap_nscd_group_max_db_size}}
+  auto-propagate        group   {{foxpass_ldap_nscd_group_auto_propagate}}
+
+  enable-cache          hosts   {{foxpass_ldap_nscd_hosts_enable_cache}}
+  positive-time-to-live hosts   {{foxpass_ldap_nscd_hosts_positive_time_to_live}}
+  negative-time-to-live hosts   {{foxpass_ldap_nscd_hosts_negative_time_to_live}}
+  suggested-size        hosts   {{foxpass_ldap_nscd_hosts_suggested_size}}
+  check-files           hosts   {{foxpass_ldap_nscd_hosts_check_files}}
+  persistent            hosts   {{foxpass_ldap_nscd_hosts_persistent}}
+  shared                hosts   {{foxpass_ldap_nscd_hosts_shared}}
+  max-db-size           hosts   {{foxpass_ldap_nscd_hosts_max_db_size}}
+  auto-propagate        hosts   {{foxpass_ldap_nscd_hosts_auto_propagate}}
+
+  enable-cache          services   {{foxpass_ldap_nscd_services_enable_cache}}
+  positive-time-to-live services   {{foxpass_ldap_nscd_services_positive_time_to_live}}
+  negative-time-to-live services   {{foxpass_ldap_nscd_services_negative_time_to_live}}
+  suggested-size        services   {{foxpass_ldap_nscd_services_suggested_size}}
+  check-files           services   {{foxpass_ldap_nscd_services_check_files}}
+  persistent            services   {{foxpass_ldap_nscd_services_persistent}}
+  shared                services   {{foxpass_ldap_nscd_services_shared}}
+  max-db-size           services   {{foxpass_ldap_nscd_services_max_db_size}}
+  auto-propagate        services   {{foxpass_ldap_nscd_services_auto_propagate}}
+
+# netgroup caching is known-broken, so disable it in the default config,
+# see: https://bugs.launchpad.net/ubuntu/+source/eglibc/+bug/1068889
+  enable-cache          netgroup  no
+  positive-time-to-live netgroup  28800
+  negative-time-to-live netgroup  20
+  suggested-size        netgroup  211
+  check-files           netgroup  yes
+  persistent            netgroup  yes
+  shared                netgroup  yes
+  max-db-size           netgroup  33554432
