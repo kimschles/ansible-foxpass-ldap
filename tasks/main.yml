@@ -46,7 +46,8 @@
       copy:
         dest: '/etc/pam.d/memberships-group'
         content: |
-         account required pam_listfile.so onerr=fail item=group sense=allow file={{foxpass_ldap_acl_groups_config}}
+         account sufficient    pam_succeed_if.so uid < 1000 quiet
+         account required      pam_listfile.so   onerr=fail item=group sense=allow file={{foxpass_ldap_acl_groups_config}}
       when: foxpass_ldap_acl_groups_enabled
 
     - name: include group memberships in common-account
