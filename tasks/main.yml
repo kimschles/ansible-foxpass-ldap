@@ -21,7 +21,7 @@
 
     - name: get foxpass setup script
       get_url: 
-        url: 'https://raw.githubusercontent.com/foxpass/foxpass-setup/master/linux/ubuntu/14.04/foxpass_setup.py' 
+        url: 'https://raw.githubusercontent.com/foxpass/foxpass-setup/fb86babfc6a3fd10b03d881d7bbd5fd33cb314bd/linux/ubuntu/14.04/foxpass_setup.py' 
         dest: '/tmp/foxpass_setup.py'
 
     - name: run foxpass setup
